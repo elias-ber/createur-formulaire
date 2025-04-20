@@ -1,0 +1,179 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-color: #f4f4f4;
+}
+
+.container {
+    width: 45%;
+    margin: 0;
+    padding: 0;
+}
+
+.form-builder,
+.form-preview {
+    display: none;
+}
+
+.form-preview.active {
+    display: block;
+}
+
+.form-field {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px 0;
+    position: relative;
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+.form-preview .form-field {
+    border: none;
+    padding: 0;
+    margin: 10px 0;
+}
+
+.star-rating {
+    display: flex;
+    justify-content: center;
+    direction: rtl;
+}
+
+.star-rating input[type="radio"] {
+    display: none;
+}
+
+.star-rating label {
+    font-size: 2em;
+    color: #ddd;
+    cursor: pointer;
+}
+
+.star-rating input[type="radio"]:checked~label {
+    color: #ffca08;
+}
+
+.star-rating label:hover,
+.star-rating label:hover~label {
+    color: #ffca08;
+}
+
+.preview-container {
+    width: 100%;
+    margin: 20px auto;
+}
+
+.card {
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.required-label::after {
+    content: ' *';
+    color: red;
+}
+
+#json-output {
+    background-color: #f8f8f8;
+    padding: 10px;
+    border-radius: 4px;
+    overflow: auto;
+    max-height: 200px;
+    margin-top: 10px;
+    white-space: pre-wrap;
+    font-family: monospace;
+}
+
+.checkbox-container,
+.radio-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.checkbox-container input[type="checkbox"],
+.radio-container input[type="radio"] {
+    width: auto;
+    margin-right: 10px;
+}
+
+.form-field label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-field input,
+.form-field textarea,
+.form-field select,
+#email-modal input {
+    width: 100%;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+#submit-button,
+#email-modal button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#submit-button:hover,
+#email-modal button {
+    background-color: #45a049;
+}
+
+#email-modal button {
+    color: #fff;
+}
+
+#email-modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+    padding-top: 60px;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 8px;
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}

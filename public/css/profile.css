@@ -1,0 +1,200 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+body {
+    background-color: rgb(249, 250, 251);
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 256px;
+    background-color: white;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar a {
+    text-decoration: none;
+}
+
+.logo-container {
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid rgb(229, 231, 235);
+}
+
+.logo-text {
+    font-size: 20px;
+    font-weight: bold;
+    color: rgb(37, 99, 235);
+    margin-left: 8px;
+}
+
+.sidebar-content {
+    flex-grow: 1;
+    padding: 16px;
+}
+
+.sidebar-footer {
+    border-top: 1px solid rgb(229, 231, 235);
+    padding: 16px;
+}
+
+.menu-button {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 8px 16px;
+    margin-bottom: 8px;
+    color: rgb(55, 65, 81);
+    background: none;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.menu-button:hover {
+    background-color: rgb(239, 246, 255);
+}
+
+.menu-button.active {
+    background-color: rgb(239, 246, 255);
+}
+
+.menu-button i {
+    margin-right: 12px;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 32px;
+    overflow: auto;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+}
+
+.back-button {
+    margin-right: 16px;
+    color: rgb(75, 85, 99);
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.back-button:hover {
+    color: rgb(37, 99, 235);
+}
+
+.page-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: rgb(31, 41, 55);
+}
+
+.settings-container {
+    max-width: 48rem;
+    margin: 0 auto;
+}
+
+.settings-card {
+    background-color: white;
+    padding: 24px;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    margin-bottom: 24px;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-left: 8px;
+}
+
+form {
+    margin-bottom: 24px;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+label {
+    display: block;
+    color: rgb(55, 65, 81);
+    margin-bottom: 8px;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid rgb(209, 213, 219);
+    border-radius: 4px;
+}
+
+.btn {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.btn i {
+    margin-right: 8px;
+}
+
+.btn-primary {
+    background-color: rgb(37, 99, 235);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: rgb(29, 78, 216);
+}
+
+.btn-danger {
+    background-color: rgb(220, 38, 38);
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: rgb(185, 28, 28);
+}
+
+.section-divider {
+    border-top: 1px solid rgb(229, 231, 235);
+    padding-top: 24px;
+    margin-top: 24px;
+}
+
+.text-gray {
+    color: rgb(107, 114, 128);
+    margin-bottom: 16px;
+}

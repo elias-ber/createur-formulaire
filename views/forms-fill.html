@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remplir le Formulaire</title>
+    <link rel="stylesheet" href="/css/forms-fill.css">
+    <script src="/js/forms-fill.js" defer></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="form-preview" id="form-preview">
+            <div class="preview-container" id="preview-container">
+                <div id="preview-header">
+                    <h1 id="preview-title"></h1>
+                    <p id="preview-description"></p>
+                </div>
+                <form id="preview-form">
+                    <div id="preview-fields"></div>
+                    <button type="submit" id="submit-button">Envoyer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="email-modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Entrez votre email</h2>
+            <input type="email" id="email-input" placeholder="Votre email" required>
+            <small id="email-error" style="color: red; display: none;">Vous avez déjà répondu au formulaire.</small>
+            <h3>Réponses :</h3>
+            <pre id="json-output"></pre>
+            <button type="button" id="email-submit-button">Envoyer</button>
+        </div>
+    </div>
+</body>
+
+</html>

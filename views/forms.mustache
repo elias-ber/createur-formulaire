@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Dashboard - Formidable</title>
+    <link rel="stylesheet" href="/css/forms.css">
+    <script src="/js/forms.js" defer></script>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <i data-lucide="clipboard-list" class="logo-icon"></i>
+            <h1>Formidable</h1>
+        </div>
+        <div class="sidebar-content">
+            <!-- Menu items will go here -->
+        </div>
+        <div class="sidebar-footer">
+            <button class="menu-button">
+                <i data-lucide="clipboard-list"></i>
+                <a href="/forms"><span>Mes formulaires</span></a>
+            </button>
+            <button class="menu-button">
+                <i data-lucide="settings"></i>
+                <a href="/profile"><span>Paramètres</span></a>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <div>
+                <h1>BIENVENUE {{user.username}},</h1>
+                <p>Que souhaitez-vous faire aujourd'hui ?</p>
+            </div>
+            <button class="new-button" id="newFormButton">
+                <i data-lucide="file-plus"></i>
+                <span>Nouveau formulaire</span>
+            </button>
+        </div>
+
+        <!-- Content Sections -->
+        <div class="content">
+            <!-- Drafts Section -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i data-lucide="edit" class="draft-icon"></i>
+                        <h2>Brouillons</h2>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="table-header draft-header">
+                        <div>Titre</div>
+                        <div>Dernière modification</div>
+                        <div class="text-right">Actions</div>
+                    </div>
+                    {{#drafts.length}}
+                    {{#drafts}}
+                    <div class="table-row draft-row">
+                        <div class="item-title">{{title}}</div>
+                        <div class="item-date">{{updated_at}}</div>
+                        <div class="item-actions">
+                            <button class="action-button" title="Voir"
+                                onclick="window.open('/forms/{{id}}/preview', '_blank')">
+                                <i data-lucide="eye" class="view-icon"></i>
+                            </button>
+                            <button class="action-button" title="Publier"
+                                onclick="openPublishModal('{{id}}', '{{title}}')">
+                                <i data-lucide="upload" class="upload-icon"></i>
+                            </button>
+                            <button class="action-button" title="Modifier"
+                                onclick="openEditModal('{{id}}', '{{title}}', true)">
+                                <i data-lucide="edit" class="edit-icon"></i>
+                            </button>
+                            <button class="action-button" title="Copier" onclick="copyForm('{{id}}')">
+                                <i data-lucide="copy" class="copy-icon"></i>
+                            </button>
+                            <button class="action-button" title="Supprimer"
+                                onclick="openDeleteModal('{{id}}', '{{title}}')">
+                                <i data-lucide="trash" class="delete-icon"></i>
+                            </button>
+                        </div>
+                    </div>
+                    {{/drafts}}
+                    {{/drafts.length}}
+                </div>
+            </div>
+
+            <!-- Published Forms Section -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i data-lucide="file-text" class="published-icon"></i>
+                        <h2>Formulaires publiés</h2>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="table-header published-header">
+                        <div>Titre</div>
+                        <div>Date de publication</div>
+                        <div>Réponses</div>
+                        <div class="text-right">Actions</div>
+                    </div>
+                    {{#published.length}}
+                    {{#published}}
+                    <div class="table-row published-row">
+                        <div class="item-title">{{title}}</div>
+                        <div class="item-date">{{published_at}}</div>
+                        <div class="item-responses">{{responses}}</div>
+                        <div class="item-actions">
+                            <button class="action-button" title="Voir"
+                                onclick="window.open('/forms/{{id}}/preview', '_blank')">
+                                <i data-lucide="eye" class="view-icon"></i>
+                            </button>
+                            <button class="action-button" title="Exporter les réponses"
+                                onclick="exportAnswers('{{id}}')">
+                                <i data-lucide="file-up" class="upload-icon"></i>
+                            </button>
+                            <button class="action-button" title="Modifier"
+                                onclick="openEditModal('{{id}}', '{{title}}', false)">
+                                <i data-lucide="edit" class="edit-icon"></i>
+                            </button>
+                            <button class="action-button" title="Copier" onclick="copyForm('{{id}}')">
+                                <i data-lucide="copy" class="copy-icon"></i>
+                            </button>
+                            <button class="action-button" title="Supprimer"
+                                onclick="openDeleteModal('{{id}}', '{{title}}')">
+                                <i data-lucide="trash" class="delete-icon"></i>
+                            </button>
+                        </div>
+                    </div>
+                    {{/published}}
+                    {{/published.length}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Structure for New Form -->
+    <div id="newFormModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h2>Nouveau formulaire</h2>
+            </div>
+            <div class="modal-body">
+                <label for="formTitle">Comment voulez-vous appeler votre nouveau formulaire ?</label>
+                <input type="text" id="formTitle" name="formTitle" maxlength="128" required>
+            </div>
+            <div class="modal-footer">
+                <button class="cancel-button">Annuler</button>
+                <button class="confirm-button">Créer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Structure for Publish Form -->
+    <div id="publishFormModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h2>Publier le formulaire</h2>
+            </div>
+            <div class="modal-body">
+                <p>Voulez-vous publier le formulaire <span id="publishFormTitle"></span> ? Cette action est
+                    irréversible.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="cancel-button">Annuler</button>
+                <button class="confirm-button" onclick="publishForm()">Publier</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Structure for Delete Form -->
+    <div id="deleteFormModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h2>Supprimer le formulaire</h2>
+            </div>
+            <div class="modal-body">
+                <p>Voulez-vous supprimer le formulaire <span id="deleteFormTitle"></span> ? Cette action est
+                    irréversible.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="cancel-button">Annuler</button>
+                <button class="confirm-button" onclick="deleteForm()">Supprimer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Structure for Edit Form -->
+    <div id="editFormModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h2>Modifier le formulaire</h2>
+            </div>
+            <div class="modal-body">
+                <label for="editFormTitle">Nouveau nom du formulaire :</label>
+                <input type="text" id="editFormTitle" name="editFormTitle" maxlength="128" required>
+            </div>
+            <div class="modal-footer">
+                <button class="cancel-button">Annuler</button>
+                <button class="confirm-button" onclick="editFormTitle()">Modifier le titre</button>
+                <button class="confirm-button" onclick="editInEditor()">Modifier dans l'éditeur</button>
+            </div>
+        </div>
+    </div>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>lucide.createIcons();</script>
+</body>
+
+</html>

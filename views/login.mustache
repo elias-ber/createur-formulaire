@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formidable - Connexion</title>
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="left-side">
+            <div class="logo-container">
+                <img src="/images/logo.png" alt="Logo" class="logo">
+            </div>
+        </div>
+        <div class="right-side">
+            <div class="register-container">
+                <a href="/register" class="link">Créer un compte</a>
+            </div>
+            <div class="form-container">
+                <h1>CONNEXION</h1>
+                <form action="/login" method="POST">
+                    <input type="email" placeholder="Email" name="email" required>
+                    <input type="password" placeholder="Mot de passe" name="password" required>
+                    <button type="submit">Se connecter</button>
+                </form>
+            </div>
+        </div>
+        <a href="https://github.com/elias-ber/createur-formulaire" target="_blank" rel="noopener noreferrer"
+            class="github-icon">
+            <i data-lucide="github"></i>
+        </a>
+    </div>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>lucide.createIcons();</script>
+</body>
+
+</html>

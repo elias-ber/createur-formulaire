@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formidable - Paramètres</title>
+    <link rel="stylesheet" href="/css/profile.css">
+</head>
+
+<body>
+    <!-- Side Navigation -->
+    <div class="sidebar">
+        <div class="logo-container">
+            <i data-lucide="clipboard-list" style="color: rgb(37, 99, 235); width: 24px; height: 24px;"></i>
+            <h1 class="logo-text">Formidable</h1>
+        </div>
+
+        <div class="sidebar-content">
+            <!-- Menu items will go here -->
+        </div>
+
+        <div class="sidebar-footer">
+            <button class="menu-button">
+                <i data-lucide="clipboard-list" style="width: 20px; height: 20px;"></i>
+                <a href="/forms"><span>Mes formulaires</span></a>
+            </button>
+
+            <button class="menu-button active">
+                <i data-lucide="settings" style="width: 20px; height: 20px;"></i>
+                <span><a href="/profile">Paramètres</a></span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-title">
+                <button class="back-button">
+                    <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+                </button>
+                <h1 class="page-title">Paramètres</h1>
+            </div>
+        </div>
+
+        <!-- Settings Content -->
+        <div class="settings-container">
+            <div class="settings-card">
+                <!-- Profile Section -->
+                <div class="section-header">
+                    <i data-lucide="user" style="color: rgb(59, 130, 246); width: 20px; height: 20px;"></i>
+                    <h2 class="section-title">Informations de profil</h2>
+                </div>
+
+                <form id="profile-form" action="/profile/edit" method="POST">
+                    <div class="form-group">
+                        <label for="username">Nom d'utilisateur</label>
+                        <input id="username" name="username" type="text" value="{{user.username}}" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input id="email" name="email" type="email" value="{{user.email}}" required />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i data-lucide="save" style="width: 16px; height: 16px;"></i>
+                        <span>Enregistrer les modifications</span>
+                    </button>
+                </form>
+
+                <!-- Password Section -->
+                <div class="section-divider">
+                    <div class="section-header">
+                        <i data-lucide="lock" style="color: rgb(59, 130, 246); width: 20px; height: 20px;"></i>
+                        <h2 class="section-title">Changer le mot de passe</h2>
+                    </div>
+
+                    <form id="password-form" action="/profile/change-password" method="POST">
+                        <div class="form-group">
+                            <label for="current">Mot de passe actuel</label>
+                            <input id="current" name="current" type="password" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="new">Nouveau mot de passe</label>
+                            <input id="new" name="new" type="password" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirm">Confirmer le nouveau mot de passe</label>
+                            <input id="confirm" name="confirm" type="password" required />
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i data-lucide="save" style="width: 16px; height: 16px;"></i>
+                            <span>Mettre à jour le mot de passe</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Logout Section -->
+                <div class="section-divider">
+                    <div class="section-header">
+                        <i data-lucide="log-out" style="color: rgb(239, 68, 68); width: 20px; height: 20px;"></i>
+                        <h2 class="section-title">Déconnexion</h2>
+                    </div>
+
+                    <p class="text-gray">
+                        Vous pouvez vous déconnecter de votre compte en cliquant sur le bouton ci-dessous.
+                    </p>
+
+                    <form action="/logout" method="POST">
+                        <button type="submit" class="btn btn-danger">
+                            <i data-lucide="log-out" style="width: 16px; height: 16px;"></i>
+                            <span>Déconnexion</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>lucide.createIcons();</script>
+</body>
+
+</html>

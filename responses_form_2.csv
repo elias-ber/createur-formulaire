@@ -1,0 +1,3 @@
+email,date,Texte,Email,Téléphone,Commentaire,Choix unique,Choix multiples,Liste déroulante,Heure,Date,Évaluation,Nombre,URL,Couleur
+test@test.test,Sun Apr 20 2025 01:31:13 GMT+0200 (heure d’été d’Europe centrale),,,,,,"""Option 2""",,,,"""5""",,,"""#000000"""
+test@test.test,Sun Apr 20 2025 01:31:13 GMT+0200 (heure d’été d’Europe centrale),,,,,,"""Option 2, Option 3""",,,,"""5""",,,"""#000000"""
