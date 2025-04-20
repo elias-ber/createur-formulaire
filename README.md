@@ -32,16 +32,17 @@ L'objectif est de fournir un outil simple et efficace pour la création et la ge
 <h2 id="aperçu">🖥️ Aperçu</h2>
 
 ✨ **Interface utilisateur moderne et réactive**
-![Dashboard](#)
+![Dashboard](./docs/dashboard.png)
+
+📥 **Modification des données utilisateurs**
+![Profil](./docs/profile.png)
 
 🛠️ **Éditeur de formulaires**
-![Formulaires](#)
+![Editeur](./docs/editor.png)
 
 📋 **Gestion de formulaires**
-![Formulaires](#)
+![Formulaires](./docs/preview.png)
 
-📥 **Récupération des réponses en CSV**
-![CSV](#)
 
 ---
 
