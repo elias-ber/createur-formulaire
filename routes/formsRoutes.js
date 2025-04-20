@@ -32,17 +32,26 @@ router.get('/:id/fill', (req, res) => {
     res.sendFile(filePath);
 });
 
-router.get('/:id/edit', isAuthenticated, (req, res) => {
-    const form = forms.findByPk(req.params.id);
-    if (form.created_by !== req.user.id) {
-        return res.status(403).send('Unauthorized.');
-    } else if (form.is_published === 1) {
-        return res.status(400).send('Form is published.');
+router.get('/:id/edit', isAuthenticated, async (req, res) => {
+    try {
+        const form = await forms.findByPk(req.params.id);
+        if (!form) {
+            return res.status(404).send('Form not found.');
+        }
+        if (form.created_by !== req.user.id) {
+            return res.status(403).send('Unauthorized.');
+        }
+        if (form.is_published === 1) {
+            return res.status(400).send('Form is published.');
+        }
+        const filePath = path.join(__dirname, '../views', 'forms-edit.html');
+        res.sendFile(filePath);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error retrieving form.');
     }
-    const filePath = path.join(__dirname, 'views', 'forms-edit.html');
-    res.sendFile(filePath);
-
 });
+
 
 router.get('/', isAuthenticated, async (req, res) => {
     try {

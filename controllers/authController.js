@@ -7,6 +7,10 @@ exports.init = (_passport) => {
     passport = _passport;
 };
 
+const redirect = (req, res, next) => {
+    res.redirect('/login')
+};
+
 exports.register = async (req, res) => {
     const { username, email, password } = req.body;
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_])[A-Za-z\d@$!%*?&_]{12,}$/;

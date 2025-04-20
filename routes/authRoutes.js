@@ -6,6 +6,10 @@ const passport = require('passport');
 // Initialiser passport dans le contrôleur
 authController.init(passport);
 
+router.get('/', (req, res) => {
+    res.redirect('/login');
+});
+
 router.get('/login', (req, res) => {
     res.render('login');
 });

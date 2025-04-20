@@ -493,7 +493,7 @@ function saveForm() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ title: formData.title, json_structure: jsonString })
+            body: JSON.stringify({ json_structure: jsonString })
         })
             .then(response => {
                 if (!response.ok) {

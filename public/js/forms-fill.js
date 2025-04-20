@@ -198,6 +198,7 @@ document.getElementById('email-submit-button').addEventListener('click', functio
     const formId = window.location.pathname.split('/')[2];
     const answers = JSON.parse(document.getElementById('json-output').textContent).answers;
 
+    console.log(email, formId, answers)
     if (!email) {
         emailError.textContent = "Veuillez entrer un email valide.";
         emailError.style.display = 'block';

@@ -1,6 +1,7 @@
 const { forms, answers } = require('../models/init-models')(require('../config/sequelize'));
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const path = require('path');
+const fs = require('fs')
 
 exports.createForm = async (req, res) => {
     const { title } = req.body;
@@ -81,54 +82,93 @@ exports.getFormAnswers = async (req, res) => {
     try {
         const formId = req.params.id;
         const form = await forms.findByPk(formId);
-        if (form.created_by !== req.user.id) {
-            return res.status(403).send('Unauthorized.');
+        if (!form) {
+            return res.status(404).json({ message: 'Formulaire non trouvé.' });
         }
+        if (form.created_by !== req.user.id) {
+            return res.status(403).json({ message: 'Non autorisé.' });
+        }
+
+        // Récupérer les réponses du formulaire
         const responses = await answers.findAll({
             where: { form_id: formId },
             attributes: ['email', 'created_at', 'json_structure']
         });
+
         if (responses.length === 0) {
             return res.status(404).json({ message: 'Aucune réponse trouvée pour ce formulaire.' });
         }
-        const formFields = form.json_structure.fields;
+
+        // Vérifier si form.json_structure est un JSON valide
+        let formFields = [];
+        try {
+            if (typeof form.json_structure === 'string') {
+                const jsonStructure = JSON.parse(form.json_structure);
+                formFields = jsonStructure.fields || [];
+            } else {
+                formFields = form.json_structure.fields || [];
+            }
+        } catch (parseError) {
+            console.error('Error parsing JSON structure:', parseError);
+            return res.status(500).json({ message: 'Erreur de format JSON.' });
+        }
+
+        // Préparer les en-têtes du CSV
         const headers = [
-            { id: 'email', title: 'email' },
-            { id: 'date', title: 'date' }
+            { id: 'email', title: 'Email' },
+            { id: 'date', title: 'Date' }
         ];
+
         formFields.forEach(field => {
             headers.push({ id: field.id.toString(), title: field.label });
         });
+
+        // Préparer les données du CSV
         const csvData = responses.map(response => {
             const row = {
                 email: response.email,
                 date: response.created_at
             };
+
             const jsonStructure = JSON.parse(response.json_structure);
             jsonStructure.forEach(item => {
                 let value = item.value;
+                // Si la valeur est un tableau, la convertir en chaîne de caractères
                 if (Array.isArray(value)) {
-                    value = value.join(', ');
+                    value = value.join(', '); // Convertir le tableau en chaîne de caractères
                 }
+                // Échapper les valeurs contenant des points-virgules ou des guillemets
                 row[item.id] = value ? `"${value.replace(/"/g, '""')}"` : '';
             });
+
             return row;
         });
+
+        // Créer le fichier CSV avec le séparateur `;`
+        const csvFilePath = path.join(__dirname, '..', `responses_form_${formId}.csv`);
         const csvWriter = createCsvWriter({
-            path: `responses_form_${formId}.csv`,
+            path: csvFilePath,
             header: headers.map(header => ({ id: header.id, title: header.title })),
-            delimiter: ';'
+            delimiter: ';' // Utiliser `;` comme séparateur
         });
+
         await csvWriter.writeRecords(csvData);
-        res.download(`responses_form_${formId}.csv`, `responses_form_${formId}.csv`, err => {
+
+        // Envoyer le fichier CSV en réponse
+        res.download(csvFilePath, `responses_form_${formId}.csv`, err => {
             if (err) {
-                res.status(500).json({ message: 'Erreur lors de l\'envoi du fichier.' });
+                console.error('Error sending file:', err);
+                return res.status(500).json({ message: 'Erreur lors de l\'envoi du fichier.' });
             }
+            // Supprimer le fichier après l'envoi
+            fs.unlinkSync(csvFilePath);
         });
     } catch (error) {
+        console.error('Error:', error);
         res.status(500).json({ message: 'Une erreur est survenue.' });
     }
 };
+
 
 exports.editForm = async (req, res) => {
     const { title, json_structure } = req.body;
@@ -170,12 +210,10 @@ exports.deleteForm = async (req, res) => {
             return res.status(403).send('Unauthorized.');
         }
 
-        // Supprimer les réponses associées
         await answers.destroy({
             where: { form_id: form.id }
         });
 
-        // Supprimer le formulaire
         await form.destroy();
 
         res.status(204).send();
