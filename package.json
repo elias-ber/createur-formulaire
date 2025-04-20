@@ -1,4 +1,12 @@
 {
+  "name": "formidable",
+  "version": "1.0.0",
+  "description": "Créateur de formulaire en MVC avec Express, Sequelize, MySQL, Passport, Mustache",
+  "main": "app.js",
+  "scripts": {
+      "start": "node app.js",
+      "dev": "nodemon app.js"
+  },
   "dependencies": {
     "argon2": "^0.41.1",
     "body-parser": "^2.2.0",
