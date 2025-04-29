@@ -28,8 +28,25 @@ router.get('/:id/preview', (req, res) => {
 });
 
 router.get('/:id/fill', (req, res) => {
-    const filePath = path.join(__dirname, '../views', 'forms-fill.html');
-    res.sendFile(filePath);
+    const formId = req.params.id;
+
+    try {
+        const form = await Form.findByPk(formId);
+
+        if (!form) {
+            return res.status(404).send('Formulaire introuvable');
+        }
+
+        if (!form.is_published) {
+            return res.send('Formulaire non publié');
+        }
+
+        const filePath = path.join(__dirname, 'views', 'forms-fill.html');
+        res.sendFile(filePath);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Erreur serveur');
+    }
 });
 
 router.get('/:id/edit', isAuthenticated, async (req, res) => {
