@@ -187,6 +187,7 @@ exports.editForm = async (req, res) => {
     }
 };
 
+
 exports.publishForm = async (req, res) => {
     try {
         const form = await forms.findByPk(req.params.id);

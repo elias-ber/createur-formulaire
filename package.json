@@ -4,8 +4,9 @@
   "description": "Créateur de formulaire en MVC avec Express, Sequelize, MySQL, Passport, Mustache",
   "main": "app.js",
   "scripts": {
-      "start": "node app.js",
-      "dev": "nodemon app.js"
+    "test": "jest",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "dependencies": {
     "argon2": "^0.41.1",
@@ -14,13 +15,17 @@
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "express-session": "^1.18.1",
+    "fs": "^0.0.1-security",
+    "jsdom": "^26.1.0",
     "mustache-express": "^1.3.2",
     "mysql2": "^3.14.0",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
+    "path": "^0.12.7",
     "sequelize": "^6.37.7"
   },
   "devDependencies": {
+    "jest": "^29.7.0",
     "sequelize-auto": "^0.8.8",
     "sequelize-cli": "^6.6.2"
   }

@@ -155,6 +155,7 @@ function addField(type) {
         case 'dropdown':
         case 'radio':
         case 'checkbox':
+        case 'matrix':
             fieldHTML += `
                         <label>Options:</label>
                         <div class="options-list">
@@ -170,6 +171,23 @@ function addField(type) {
                             <span>Ajouter une option</span>
                         </button>
                     `;
+            if (type === 'matrix') {
+                fieldHTML += `
+                        <label>Notations:</label>
+                        <div class="ratings-list">
+                            <div>
+                                <input type="text" placeholder="Notation" value="1" required>
+                                <button onclick="removeRating(this)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <button onclick="addRating(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                            <span>Ajouter une notation</span>
+                        </button>
+                    `;
+            }
             break;
     }
 
@@ -194,6 +212,7 @@ function getDefaultLabelForType(type) {
         'star': 'Évaluation',
         'number': 'Nombre',
         'color': 'Couleur',
+        'matrix': 'Matrice de choix'
     };
     return types[type] || 'Champ';
 }
@@ -225,6 +244,29 @@ function removeOption(button) {
         optionDiv.remove();
     } else {
         alert("Vous devez avoir au moins une option.");
+    }
+}
+
+function addRating(button) {
+    const fieldDiv = button.closest('.form-field');
+    const ratingsList = fieldDiv.querySelector('.ratings-list');
+    const ratingDiv = document.createElement('div');
+    ratingDiv.innerHTML = `
+                <input type="text" placeholder="Notation" value="${ratingsList.children.length + 1}" required>
+                <button onclick="removeRating(this)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            `;
+    ratingsList.appendChild(ratingDiv);
+}
+
+function removeRating(button) {
+    const ratingDiv = button.parentElement;
+    const ratingsList = ratingDiv.parentElement;
+    if (ratingsList.children.length > 1) {
+        ratingDiv.remove();
+    } else {
+        alert("Vous devez avoir au moins une notation.");
     }
 }
 
@@ -309,6 +351,7 @@ function collectFormData() {
         const startInput = fieldDiv.querySelector('.start-input');
         const endInput = fieldDiv.querySelector('.end-input');
         const optionsList = fieldDiv.querySelector('.options-list');
+        const ratingsList = fieldDiv.querySelector('.ratings-list');
 
         if (placeholderInput && placeholderInput.value) field.placeholder = placeholderInput.value;
         if (maxCharInput && maxCharInput.value) field.maxChar = parseInt(maxCharInput.value, 10);
@@ -322,6 +365,15 @@ function collectFormData() {
             optionsList.querySelectorAll('input[type="text"]').forEach(optionInput => {
                 if (optionInput.value) {
                     field.options.push(optionInput.value);
+                }
+            });
+        }
+
+        if (ratingsList) {
+            field.ratings = [];
+            ratingsList.querySelectorAll('input[type="text"]').forEach(ratingInput => {
+                if (ratingInput.value) {
+                    field.ratings.push(ratingInput.value);
                 }
             });
         }
@@ -468,6 +520,24 @@ function updatePreview() {
             case 'url':
                 fieldHTML += `<input id="field-${field.id}" type="url" placeholder="${field.placeholder || ''}"${field.required ? ' required' : ''}>`;
                 break;
+            case 'matrix':
+                if (field.options && field.options.length > 0 && field.ratings && field.ratings.length > 0) {
+                    fieldHTML += '<table border="1" style="border-collapse: collapse; width: 100%;">';
+                    fieldHTML += '<tr><th style="padding: 8px;"></th>';
+                    field.ratings.forEach(rating => {
+                        fieldHTML += `<th style="padding: 8px;">${rating}</th>`;
+                    });
+                    fieldHTML += '</tr>';
+                    field.options.forEach(option => {
+                        fieldHTML += `<tr><td style="padding: 8px;">${option}</td>`;
+                        field.ratings.forEach(rating => {
+                            fieldHTML += `<td style="padding: 8px;"><input type="radio" name="matrix-${field.id}-${option}" value="${rating}" style="accent-color: ${formData.styles.assetColor};"></td>`;
+                        });
+                        fieldHTML += '</tr>';
+                    });
+                    fieldHTML += '</table>';
+                }
+                break;
         }
 
         fieldDiv.innerHTML = fieldHTML;
@@ -515,7 +585,6 @@ function saveForm() {
     }
 }
 
-
 function validateForm(form) {
     const errors = [];
 
@@ -528,9 +597,13 @@ function validateForm(form) {
             errors.push(`Le champ #${field.id} doit avoir un label.`);
         }
 
-        if ((field.type === 'dropdown' || field.type === 'radio' || field.type === 'checkbox') &&
+        if ((field.type === 'dropdown' || field.type === 'radio' || field.type === 'checkbox' || field.type === 'matrix') &&
             (!field.options || field.options.length === 0)) {
             errors.push(`Le champ '${field.label || '#' + field.id}' doit avoir au moins une option.`);
+        }
+
+        if (field.type === 'matrix' && (!field.ratings || field.ratings.length === 0)) {
+            errors.push(`Le champ '${field.label || '#' + field.id}' doit avoir au moins une notation.`);
         }
 
         if ((field.maxChar !== undefined) &&
@@ -659,17 +732,36 @@ function fetchFormData() {
 
                     if (field.options) {
                         const optionsList = fieldDiv.querySelector('.options-list');
-                        optionsList.innerHTML = '';
-                        field.options.forEach(option => {
-                            const optionDiv = document.createElement('div');
-                            optionDiv.innerHTML = `
-                                        <input type="text" placeholder="Option" value="${option}" required>
-                                        <button onclick="removeOption(this)">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                                        </button>
-                                    `;
-                            optionsList.appendChild(optionDiv);
-                        });
+                        if (optionsList) {
+                            optionsList.innerHTML = '';
+                            field.options.forEach(option => {
+                                const optionDiv = document.createElement('div');
+                                optionDiv.innerHTML = `
+                                            <input type="text" placeholder="Option" value="${option}" required>
+                                            <button onclick="removeOption(this)">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                            </button>
+                                        `;
+                                optionsList.appendChild(optionDiv);
+                            });
+                        }
+                    }
+
+                    if (field.ratings) {
+                        const ratingsList = fieldDiv.querySelector('.ratings-list');
+                        if (ratingsList) {
+                            ratingsList.innerHTML = '';
+                            field.ratings.forEach(rating => {
+                                const ratingDiv = document.createElement('div');
+                                ratingDiv.innerHTML = `
+                                            <input type="text" placeholder="Notation" value="${rating}" required>
+                                            <button onclick="removeRating(this)">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                            </button>
+                                        `;
+                                ratingsList.appendChild(ratingDiv);
+                            });
+                        }
                     }
 
                     if (field.type === 'telephone' && field.value) {

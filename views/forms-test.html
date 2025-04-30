@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Éditeur de Formulaire</title>
+    <link rel="stylesheet" href="/css/forms-edit.css">
+    <script src="/js/forms-test.js" defer></script>
+</head>
+
+<body>
+<div class="sidebar">
+    <div class="sidebar-header">
+        <h1 id="form-title-display">Titre du Formulaire</h1>
+    </div>
+    <div class="sidebar-content">
+        <div class="action-buttons">
+            <button class="menu-button" onclick="generateJSON()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     class="lucide lucide-file-json">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="5" y1="12" x2="10" y2="12"></line>
+                    <line x1="5" y1="16" x2="19" y2="16"></line>
+                    <line x1="5" y1="20" x2="10" y2="20"></line>
+                </svg>
+                <span>Générer le JSON</span>
+            </button>
+            <button class="menu-button" onclick="saveForm()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     class="lucide lucide-save">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                    <polyline points="7 3 7 8 15 8"></polyline>
+                </svg>
+                <span>Sauvegarder</span>
+            </button>
+            <button class="menu-button" onclick="showQuitModal()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     class="lucide lucide-arrow-left-to-line">
+                    <path d="M21 12H7M21 12l-4 4M21 12l-4-4"></path>
+                </svg>
+                <span>Quitter</span>
+            </button>
+            <button class="menu-button" id="toggle-mode">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     class="lucide lucide-eye">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <span>Mode Aperçu</span>
+            </button>
+            <pre id="json-output"></pre>
+        </div>
+        <br><br>
+        <div class="sidebar-section">
+            <h3>Propriétés du formulaire</h3>
+            <div>
+                <label for="form-title">Titre du formulaire:</label>
+                <input type="text" id="form-title" placeholder="Exemple de formulaire personnalisé" required>
+            </div>
+            <div>
+                <label for="form-description">Description:</label>
+                <input type="text" id="form-description" placeholder="Description du formulaire">
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <h3>Style du formulaire</h3>
+            <div>
+                <label for="field-decoration">Décoration des champs:</label>
+                <select id="field-decoration">
+                    <option value="none">Aucune</option>
+                    <option value="card">Card</option>
+                </select>
+            </div>
+            <div>
+                <label for="header-decoration">Décoration de l'en-tête:</label>
+                <select id="header-decoration">
+                    <option value="none">Aucune</option>
+                    <option value="card">Card</option>
+                </select>
+            </div>
+            <div>
+                <label for="title-color">Couleur du titre:</label>
+                <input type="color" id="title-color" value="#333333">
+            </div>
+            <div>
+                <label for="asset-color">Couleur des éléments:</label>
+                <input type="color" id="asset-color" value="#4CAF50">
+            </div>
+            <div>
+                <label for="background-type">Arrière-plan:</label>
+                <select id="background-type" onchange="toggleBackgroundInput()">
+                    <option value="hex">Couleur (HEX)</option>
+                    <option value="url">URL</option>
+                </select>
+                <div id="background-input-container">
+                    <label for="background-color">Couleur:</label>
+                    <input type="color" id="background-color" value="#ffffff">
+                </div>
+            </div>
+        </div>
+        <br><br>
+        <div class="sidebar-section">
+            <h3>Ajouter des champs</h3>
+            <div>
+                <button class="menu-button" onclick="addField('input')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="lucide lucide-plus">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+                    <span>Ajouter un champ texte</span>
+                </button>
+                <button class="menu-button" onclick="addField('email')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="lucide lucide-plus">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+                    <span>Ajouter un champ email</span>
+                </button>
+                <button class="menu-button" onclick="addField('telephone')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="lucide lucide-plus">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+                    <span>Ajouter un champ téléphone</span>
+                </button>
+                <button class="menu-button" onclick="addField('textarea')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="lucide lucide-plus">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+                    <span>Ajouter un champ textarea</span>
+                </button>
+                <button class="menu-button" onclick="addField('radio')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="lucide lucide-plus">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+                    <span>Ajouter un champ radio</span>
+                </button>
+                <button class="menu-button" onclick="addField('checkbox')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="lucide lucide-plus">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+                    <span>Ajouter un champ checkbox</span>
+                </button>
+                <button class="menu-button" onclick="addField('dropdown')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="lucide lucide-plus">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+                    <span>Ajouter un champ dropdown</span>
+                </button>
+                <button class="menu-button" onclick="addField('time')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="lucide lucide-plus">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+                    <span>Ajouter un champ time</span>
+                </button>
+                <button class="menu-button" onclick="addField('date')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="lucide lucide-plus">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+                    <span>Ajouter un champ date</span>
+                </button>
+                <button class="menu-button" onclick="addField('star')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="lucide lucide-plus">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+                    <span>Ajouter un champ star</span>
+                </button>
+                <button class="menu-button" onclick="addField('number')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="lucide lucide-plus">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+                    <span>Ajouter un champ number</span>
+                </button>
+                <button class="menu-button" onclick="addField('color')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="lucide lucide-plus">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+                    <span>Ajouter un champ color</span>
+                </button>
+                <button class="menu-button" onclick="addField('url')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="lucide lucide-plus">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+                    <span>Ajouter un champ URL</span>
+                </button>
+                <button class="menu-button" onclick="addField('matrix')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="lucide lucide-plus">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+                    <span>Ajouter une matrice de choix</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="header">
+        <h1>Paramétrage des champs</h1>
+    </div>
+    <div class="form-builder active">
+        <div id="form-fields"></div>
+    </div>
+    <div class="form-preview" id="form-preview">
+        <div class="preview-container">
+            <div id="preview-header">
+                <h1 id="preview-title"></h1>
+                <p id="preview-description"></p>
+            </div>
+            <div id="preview-fields"></div>
+            <button id="submit-button">Envoyer</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Structure -->
+<div id="quitModal" class="modal">
+    <div class="modal-content">
+        <h2>Quitter l'éditeur de formulaire</h2>
+        <p>Voulez-vous vraiment quitter ? Toutes les modifications non sauvegardées seront perdues.</p>
+        <div class="modal-buttons">
+            <button onclick="closeQuitModal()">Annuler</button>
+            <button onclick="quitWithoutSaving()">Quitter</button>
+            <button onclick="saveAndQuit()">Sauvegarder et Quitter</button>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>
+

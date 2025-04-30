@@ -27,11 +27,11 @@ router.get('/:id/preview', (req, res) => {
     res.sendFile(filePath);
 });
 
-router.get('/:id/fill', (req, res) => {
+router.get('/:id/fill', async (req, res) => {
     const formId = req.params.id;
 
     try {
-        const form = await Form.findByPk(formId);
+        const form = await forms.findByPk(formId);
 
         if (!form) {
             return res.status(404).send('Formulaire introuvable');
@@ -41,7 +41,7 @@ router.get('/:id/fill', (req, res) => {
             return res.send('Formulaire non publié');
         }
 
-        const filePath = path.join(__dirname, 'views', 'forms-fill.html');
+        const filePath = path.join(__dirname, '../views', 'forms-fill.html');
         res.sendFile(filePath);
     } catch (error) {
         console.error(error);
@@ -62,6 +62,26 @@ router.get('/:id/edit', isAuthenticated, async (req, res) => {
             return res.status(400).send('Form is published.');
         }
         const filePath = path.join(__dirname, '../views', 'forms-edit.html');
+        res.sendFile(filePath);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error retrieving form.');
+    }
+});
+
+router.get('/:id/test', isAuthenticated, async (req, res) => {
+    try {
+        const form = await forms.findByPk(req.params.id);
+        if (!form) {
+            return res.status(404).send('Form not found.');
+        }
+        if (form.created_by !== req.user.id) {
+            return res.status(403).send('Unauthorized.');
+        }
+        if (form.is_published === 1) {
+            return res.status(400).send('Form is published.');
+        }
+        const filePath = path.join(__dirname, '../views', 'forms-test.html');
         res.sendFile(filePath);
     } catch (err) {
         console.error(err);
